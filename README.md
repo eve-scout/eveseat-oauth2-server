@@ -1,6 +1,6 @@
 # eveseat-oauth2-server
 
-This [EVE SeAT](https://github.com/eveseat) package to enable an OAuth2 server for Single sign-on.
+This [EVE SeAT](https://github.com/eveseat) package enables an OAuth2 server for Single sign-on.
 
 ## Install
 
@@ -21,7 +21,7 @@ $ composer require eve-scout/eveseat-oauth2-server
 
 #### Package Config Publishing and Migrations
 
-Run the following command while in your SeAT install:
+Run the following commands while in your SeAT install:
 
 ```bash
 $ php artisan vendor:publish
