@@ -1,0 +1,23 @@
+{
+    "name": "eve-scout/eveseat-oauth2-server",
+    "description": "EVE SeAT OAuth2 Server",
+    "homepage": "https://github.com/eve-scout/eveseat-oauth2-server",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Johnny Splunk",
+            "email": "johnnysplunk@eve-scout.com",
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "EveScout\\Seat\\Oauth2Server\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "laravel/framework": "5.1.*",
+        "eveseat/web": "1.0.*",
+        "lucadegasperi/oauth2-server-laravel": "^5.1.4"
+    }
+}
