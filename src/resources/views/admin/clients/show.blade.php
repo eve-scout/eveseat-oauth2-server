@@ -24,7 +24,7 @@
 
           <div class="form-group">
             <label for="comment">{{ trans('oauth2::seat.client_id') }}</label>
-            <input type="text" name="id" class="form-control" id="id" value="{{ $client->id }}" disabled>
+            <input type="text" name="id" class="form-control" id="id" value="{{ $client->id }}" readonly="readonly">
           </div>
 
           <div class="form-group">

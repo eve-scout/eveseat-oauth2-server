@@ -27,10 +27,15 @@ class ClientRequest extends Request
      */
     public function rules()
     {
+
+        // Get the id of the client that will be used to ignore
+        // the id constraint on.
+        $client_id = $this->request->get('id');
+
         return [
-            'name'   => 'required|max:255',
-            'id'     => 'required|unique:oauth_clients,id|max:255',
+            'id'     => 'required|unique:oauth_clients,id,' . $client_id . '|max:255',
             'secret' => 'required|max:255',
+            'name'   => 'required|max:255',
         ];
     }
 }
