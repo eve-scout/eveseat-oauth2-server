@@ -26,6 +26,7 @@ Run the following commands while in your SeAT install:
 ```bash
 $ php artisan vendor:publish
 $ php artisan migrate
+$ php artisan db:seed --class=EveScout\\Seat\\OAuth2Server\\database\\seeds\\ScopesSeeder
 ```
 
 ## Configuration
