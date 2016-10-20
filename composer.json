@@ -17,7 +17,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "eveseat/web": "1.0.*",
+        "eveseat/web": "^1.0.18",
         "lucadegasperi/oauth2-server-laravel": "^5.1.4"
     }
 }
