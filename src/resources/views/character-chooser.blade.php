@@ -6,7 +6,7 @@
 <div class="login-logo">
   S<b>e</b>AT | Single Sign On
 </div>
-<h2 class="text-center">Choose a Character</h2>
+<h2 class="text-center">Select a Character</h2>
 <form method="post" action="{{route('oauth2.character-chooser.post', $params)}}">
   {{ csrf_field() }}
   <ul class="list">
@@ -16,19 +16,11 @@
   </ul>
   <div class="list-group">
     @foreach ($characters as $character)
-      <button id="character-{{ $character->characterID }}" name="character_id" value="{{ $character->characterID }}" class="list-group-item row
-        @if(setting('main_character_id') == $character->characterID)
-          active
-        @endif>
-      ">
-        <div class="col-md-3">
-          {!! img('character', $character->characterID, 64, ['class' => 'img-circle eve-icon small-icon']) !!}
-        </div>
+      <button id="character-{{ $character->characterID }}" name="character_id" value="{{ $character->characterID }}" class="list-group-item {{ (setting('main_character_id') == $character->characterID) ? "active" : "" }}">
+        {!! img('character', $character->characterID, 64, ['class' => 'img-circle eve-icon small-icon pull-left', 'style' => 'margin-right: 15px; max-width: 64px;']) !!}
 
-        <div class="col-md-7" style="padding-top: 10px;">
-          <h4 class="list-group-item-heading">{{ $character->characterName }}</h4>
-          <div class="list-group-item-text">{{ $character->corporationName }}</div>
-        </div>
+        <h4 class="list-group-item-heading" style="margin-top: 10px;">{{ $character->characterName }}</h4>
+        <div class="list-group-item-text">{{ $character->corporationName }}</div>
       </button>
     @endforeach
   </div>
