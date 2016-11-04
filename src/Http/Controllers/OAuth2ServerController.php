@@ -72,7 +72,8 @@ class OAuth2ServerController extends Controller
         // Find previous session
 
         // Get the last session used by this client and owner
-        $session = Session::where(['client_id' => $params['client_id'], 'owner_id' => $params['character_id']])->orderBy('id', 'desc')->first();
+        $ownerId = $params['character_id'] . ':' . auth()->user()->id;
+        $session = Session::where(['client_id' => $params['client_id'], 'owner_id' => $ownerId])->orderBy('id', 'desc')->first();
 
         // Previous OAuth2 session found
         if ($session) {
@@ -84,7 +85,7 @@ class OAuth2ServerController extends Controller
 
             // If consented to scopes don't ask again just issue authcode
             if (count($scopes_diff) === 0) {
-                $redirectUri = Authorizer::issueAuthCode('character', $params['character_id'], $params);
+                $redirectUri = Authorizer::issueAuthCode('character', $ownerId, $params);
                 return redirect($redirectUri);
             }
         }
@@ -109,8 +110,9 @@ class OAuth2ServerController extends Controller
 
         $valid_character = $characters->where('characterID', (int) $request->input('character_id'));
         $params['character_id'] = $request->input('character_id');
+        $ownerId = $params['character_id'] . ':' . auth()->user()->id;
 
-        $redirectUri = Authorizer::issueAuthCode('character', $params['character_id'], $params);
+        $redirectUri = Authorizer::issueAuthCode('character', $ownerId, $params);
         return redirect($redirectUri);
     }
 
@@ -183,7 +185,10 @@ class OAuth2ServerController extends Controller
 
     public function getProfile()
     {
-        $character_id = Authorizer::getResourceOwnerId();
+        $owner_id = Authorizer::getResourceOwnerId();
+
+        list($character_id, $user_id) = array_pad(explode(':', $owner_id), 2, '');
+
         $character_info = $this->getCharacterInformation($character_id);
         $account_info = $this->getCharacterAccountInfo($character_id);
 
@@ -213,11 +218,13 @@ class OAuth2ServerController extends Controller
         }
 
         if (Authorizer::hasScope('email')) {
-            $key = ApiKeyModel::with('owner')
-                ->where('key_id', $character_info->keyID)
-                ->first();
+            $profile['email'] = null;
 
-            $profile['email']               = $key->owner->email;
+            if (! empty($user_id)) {
+                $user = $this->getUser($user_id);
+
+                $profile['email'] = $user->email;
+            }
         }
 
         if (Authorizer::hasScope('character.roles')) {
