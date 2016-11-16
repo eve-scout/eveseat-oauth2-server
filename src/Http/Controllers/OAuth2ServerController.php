@@ -195,7 +195,9 @@ class OAuth2ServerController extends Controller
         $profile = array();
 
         $profile['accountCreateDate']   = Carbon::parse($account_info->createDate)->toIso8601String();
-        $profile['accountActive']       = Carbon::parse($account_info->paidUntil)->gt(Carbon::now()) ? true : false;
+
+        // All accounts are now considered active with alpha clones
+        $profile['accountActive']       = true;
 
         $profile['characterID']         = $character_info->characterID;
         $profile['characterName']       = $character_info->characterName;
