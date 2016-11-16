@@ -22,6 +22,7 @@ use Seat\Services\Repositories\Character\CharacterRepository;
 
 use Seat\Eveapi\Models\Eve\AllianceList;
 use Seat\Eveapi\Models\Eve\ApiKey as ApiKeyModel;
+use Seat\Eveapi\Models\Corporation\Title as CorporationTitleModel;
 use Seat\Web\Models\Acl\Role;
 use EveScout\Seat\OAuth2Server\Models\Session;
 
@@ -172,12 +173,26 @@ class OAuth2ServerController extends Controller
     {
         $character = $this->getCharacterSheet($character_id);
 
-        $characterRoles = Role::whereIn('id', function($q) use ($character) {
+        // Experimental Title Affiliations
+        $characterTitles = $this->getCharacterCorporationTitles($character_id);
+
+        $characterTitlesMap = [];
+
+        foreach ($characterTitles as $title) {
+            $corporationTitle = CorporationTitleModel::where(['corporationID' => $character->corporationID, 'titleID' => $title->titleID])->first();
+            $characterTitlesMap[] = $corporationTitle->id;
+        }
+
+        $characterRoles = Role::whereIn('id', function($q) use ($character, $characterTitlesMap) {
             $q->select('role_id')
               ->from('affiliation_role')
               ->join('affiliations', 'affiliation_role.affiliation_id', '=', 'affiliations.id')
               ->where(['affiliation' => $character->characterID, 'type' => 'char'])
-              ->orWhere(['affiliation' => $character->corporationID, 'type' => 'corp']);
+              ->orWhere(['affiliation' => $character->corporationID, 'type' => 'corp'])
+              ->orWhere(function ($query) use ($characterTitlesMap) {
+                $query->whereIn('affiliation', $characterTitlesMap)
+                      ->where(['type' => 'title']);
+              });
         })->get();
 
         return $characterRoles;
